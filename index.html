@@ -10,7 +10,7 @@
     <link rel="stylesheet" crossorigin href="./assets/style.css">
     <style>
       * { box-sizing: border-box; }
-      
+
       #extra-tools {
         position: fixed;
         bottom: 20px;
@@ -47,11 +47,19 @@
         opacity: 0.5;
         cursor: not-allowed;
       }
+      .extra-btn.success {
+        background: rgba(34, 197, 94, 0.9);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+      }
+      .extra-btn.success:hover {
+        background: #22c55e;
+        box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+      }
       .privacy-link {
         background: rgba(30, 41, 59, 0.8);
         font-size: 0.85rem;
       }
-      
+
       /* Modal Styles */
       .modal {
         display: none;
@@ -65,12 +73,12 @@
         animation: fadeIn 0.3s ease-out;
       }
       .modal.active { display: flex; }
-      
+
       @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
       }
-      
+
       .modal-content {
         background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 100%);
         border: 1px solid rgba(239, 68, 68, 0.3);
@@ -82,28 +90,29 @@
         max-height: 90vh;
         overflow-y: auto;
         box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        position: relative;
       }
-      
+
       .modal-content h2 {
         margin-bottom: 20px;
         color: #ef4444;
         font-size: 1.5rem;
       }
-      
+
       .modal-content h3 {
         color: #f87171;
         margin-top: 15px;
         margin-bottom: 10px;
         font-size: 1.1rem;
       }
-      
+
       .file-input-group {
         margin: 20px 0;
         display: flex;
         flex-direction: column;
         gap: 10px;
       }
-      
+
       .file-input-wrapper {
         position: relative;
         overflow: hidden;
@@ -115,46 +124,46 @@
         transition: all 0.3s;
         background: rgba(239, 68, 68, 0.05);
       }
-      
+
       .file-input-wrapper:hover {
         border-color: #ef4444;
         background: rgba(239, 68, 68, 0.1);
       }
-      
+
       .file-input-wrapper.drag-over {
         border-color: #ef4444;
         background: rgba(239, 68, 68, 0.15);
       }
-      
+
       .file-input-wrapper input[type="file"] {
         display: none;
       }
-      
+
       .file-input-label {
         display: block;
         cursor: pointer;
         color: #cbd5e1;
         font-size: 0.95rem;
       }
-      
+
       .file-input-label strong {
         color: #f87171;
       }
-      
+
       .slider-group {
         margin: 15px 0;
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-      
+
       .slider-group label {
         color: #cbd5e1;
         font-size: 0.95rem;
         display: flex;
         justify-content: space-between;
       }
-      
+
       .slider-group input[type="range"] {
         width: 100%;
         height: 6px;
@@ -163,7 +172,7 @@
         outline: none;
         -webkit-appearance: none;
       }
-      
+
       .slider-group input[type="range"]::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -174,7 +183,7 @@
         cursor: pointer;
         box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
       }
-      
+
       .slider-group input[type="range"]::-moz-range-thumb {
         width: 18px;
         height: 18px;
@@ -184,7 +193,7 @@
         border: none;
         box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
       }
-      
+
       .modal-btns {
         display: flex;
         gap: 10px;
@@ -192,12 +201,12 @@
         margin-top: 20px;
         flex-wrap: wrap;
       }
-      
+
       .progress-container {
         display: none;
         margin-top: 20px;
       }
-      
+
       .progress-bar {
         width: 100%;
         height: 8px;
@@ -206,20 +215,20 @@
         overflow: hidden;
         margin-bottom: 10px;
       }
-      
+
       .progress-fill {
         height: 100%;
         background: linear-gradient(90deg, #ef4444, #f87171);
         width: 0%;
         transition: width 0.3s ease;
       }
-      
+
       .progress-text {
         text-align: center;
         color: #94a3b8;
         font-size: 0.9rem;
       }
-      
+
       .text-input {
         width: 100%;
         padding: 10px;
@@ -232,22 +241,11 @@
         resize: vertical;
         min-height: 80px;
       }
-      
+
       .text-input::placeholder {
         color: #64748b;
       }
-      
-      .voice-select {
-        width: 100%;
-        padding: 8px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 8px;
-        color: white;
-        font-family: 'Cairo', sans-serif;
-        font-size: 0.95rem;
-      }
-      
+
       .close-btn {
         position: absolute;
         top: 15px;
@@ -264,7 +262,7 @@
         justify-content: center;
         transition: color 0.3s;
       }
-      
+
       .close-btn:hover {
         color: #ef4444;
       }
@@ -284,42 +282,33 @@
       }
       .loaded-video-info svg { flex-shrink: 0; }
 
-      /* image overlay canvas controls */
-      #overlay-canvas-wrap {
-        position: relative;
-        display: inline-block;
-        user-select: none;
-        touch-action: none;
+      /* toast */
+      .toast-container {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
-      #overlay-canvas-wrap video {
-        display: block;
+      .toast {
+        padding: 12px 20px;
         border-radius: 12px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: white;
+        animation: slideIn 0.3s ease-out;
+        max-width: 320px;
       }
-      .overlay-img-handle {
-        position: absolute;
-        border: 2px solid #ef4444;
-        border-radius: 6px;
-        cursor: move;
-        box-sizing: border-box;
-      }
-      .overlay-img-handle .resize-handle {
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        background: #ef4444;
-        border-radius: 50%;
-        bottom: -7px;
-        right: -7px;
-        cursor: se-resize;
-        z-index: 10;
-      }
-      .overlay-img-handle img {
-        width: 100%;
-        height: 100%;
-        object-fit: fill;
-        border-radius: 4px;
-        pointer-events: none;
-        display: block;
+      .toast.success { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 15px rgba(34,197,94,0.3); }
+      .toast.error   { background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 4px 15px rgba(239,68,68,0.3); }
+      .toast.info    { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 15px rgba(59,130,246,0.3); }
+
+      @keyframes slideIn {
+        from { transform: translateX(-100%); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
       }
 
       @media (max-width: 600px) {
@@ -331,7 +320,6 @@
           padding: 8px 16px;
           font-size: 0.8rem;
         }
-        /* الشاشة الرئيسية: الأزرار الثلاثة تحت بعضها على الجوال */
         #home-cards-grid {
           grid-template-columns: 1fr !important;
         }
@@ -341,6 +329,9 @@
   <body>
     <div id="root"></div>
 
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
     <div id="extra-tools">
       <a href="PrivacyPolicy.html" class="extra-btn privacy-link" title="سياسة الخصوصية">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -348,20 +339,18 @@
       </a>
     </div>
 
-    <!-- Merge Modal: يطلب فيديو إضافي فقط -->
+    <!-- Merge Modal -->
     <div id="merge-modal" class="modal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal('merge-modal')">×</button>
         <h2>دمج الفيديوهات</h2>
         <p style="color: #cbd5e1; margin-bottom: 15px;">سيُدمج الفيديو الحالي مع فيديو إضافي تختاره</p>
 
-        <!-- الفيديو الحالي (معروض فقط) -->
         <div class="loaded-video-info" id="merge-current-info">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="m16 10 5.223-3.482A.5.5 0 0 1 22 7v10a.5.5 0 0 1-.777.416L16 14"/></svg>
           <span id="merge-current-name">الفيديو الحالي</span>
         </div>
 
-        <!-- الفيديو الإضافي -->
         <div class="file-input-group">
           <div class="file-input-wrapper" ondrop="handleDrop(event, 'merge-video2')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
             <input type="file" id="merge-video2" accept="video/*">
@@ -372,7 +361,6 @@
           </div>
         </div>
 
-        <!-- تحديد وقت الدمج -->
         <h3>ترتيب الدمج</h3>
         <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
           <label style="display:flex; align-items:center; gap:6px; color:#cbd5e1; cursor:pointer; padding:8px 14px; border-radius:10px; border:1px solid rgba(239,68,68,0.3); flex:1; min-width:120px;">
@@ -396,7 +384,7 @@
       </div>
     </div>
 
-    <!-- Trim Modal: يستخدم الفيديو الحالي مباشرة -->
+    <!-- Trim Modal -->
     <div id="trim-modal" class="modal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal('trim-modal')">×</button>
@@ -431,7 +419,7 @@
       </div>
     </div>
 
-    <!-- Speed Modal: يستخدم الفيديو الحالي مباشرة -->
+    <!-- Speed Modal -->
     <div id="speed-modal" class="modal">
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal('speed-modal')">×</button>
@@ -446,14 +434,14 @@
             <span>السرعة</span>
             <span id="speed-val">1.0x</span>
           </label>
-          <input type="range" id="speed-slider" min="0.25" max="2" step="0.25" value="1" oninput="updateSpeed(this.value)">
+          <input type="range" id="speed-slider" min="0.25" max="3" step="0.25" value="1" oninput="updateSpeed(this.value)">
         </div>
-        <!-- أزرار سريعة للسرعة -->
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
           <button onclick="setSpeed(0.5)" class="extra-btn" style="flex:1; padding:6px 10px; font-size:0.85rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); box-shadow:none;">0.5x</button>
           <button onclick="setSpeed(1)"   class="extra-btn" style="flex:1; padding:6px 10px; font-size:0.85rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); box-shadow:none;">1x</button>
           <button onclick="setSpeed(1.5)" class="extra-btn" style="flex:1; padding:6px 10px; font-size:0.85rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); box-shadow:none;">1.5x</button>
           <button onclick="setSpeed(2)"   class="extra-btn" style="flex:1; padding:6px 10px; font-size:0.85rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); box-shadow:none;">2x</button>
+          <button onclick="setSpeed(3)"   class="extra-btn" style="flex:1; padding:6px 10px; font-size:0.85rem; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); box-shadow:none;">3x</button>
         </div>
         <div class="progress-container" id="speed-progress">
           <div class="progress-bar"><div class="progress-fill" id="speed-progress-fill"></div></div>
@@ -472,11 +460,11 @@
         <button class="close-btn" onclick="closeModal('tts-modal')">×</button>
         <h2>تحويل النص إلى كلام</h2>
         <p style="color: #cbd5e1; margin-bottom: 15px;">حول نصك إلى ملف صوتي واضح</p>
-        
+
         <h3>النص</h3>
         <textarea id="tts-text" class="text-input" placeholder="أدخل النص الذي تريد تحويله إلى كلام..."></textarea>
-        
-        <h3>اللغة والصوت</h3>
+
+        <h3>الإعدادات</h3>
         <div class="slider-group">
           <label>
             <span>السرعة</span>
@@ -484,7 +472,7 @@
           </label>
           <input type="range" id="tts-rate" min="0.5" max="2" step="0.1" value="1" oninput="updateTTSRate(this.value)">
         </div>
-        
+
         <div class="slider-group">
           <label>
             <span>درجة الصوت</span>
@@ -492,12 +480,12 @@
           </label>
           <input type="range" id="tts-pitch" min="0.5" max="2" step="0.1" value="1" oninput="updateTTSPitch(this.value)">
         </div>
-        
+
         <div class="progress-container" id="tts-progress">
           <div class="progress-bar"><div class="progress-fill" id="tts-progress-fill"></div></div>
           <div class="progress-text" id="tts-status">جاري المعالجة...</div>
         </div>
-        
+
         <div class="modal-btns">
           <button class="extra-btn" onclick="startTTS()" id="tts-action-btn">تحويل إلى كلام</button>
           <button class="extra-btn" style="background:transparent; border:1px solid #334155" onclick="closeModal('tts-modal')">إلغاء</button>
@@ -506,44 +494,135 @@
     </div>
 
     <script>
+      // ===== Toast System =====
+      function showToast(message, type='info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast ' + type;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(-100%)';
+          setTimeout(() => toast.remove(), 300);
+        }, 4000);
+      }
+
+      // ===== FFmpeg Setup =====
       const FFmpeg = FFmpegWASM.FFmpeg;
       const fetchFile = FFmpegWASM.fetchFile;
-      
-      // ─── مرجع للفيديو الحالي المحمّل في الـ React app ───
-      let _currentVideoFile = null;
-      let _currentVideoSrc  = null;
-      let _currentVideoDuration = 0;
 
-      // Modal Functions
+      let ffmpeg = null;
+      let ffmpegLoaded = false;
+      let isProcessing = false;
+
+      async function initFFmpeg() {
+        if (ffmpegLoaded) return;
+        showToast('جاري تحميل محرك المعالجة لأول مرة...', 'info');
+        ffmpeg = new FFmpeg();
+        ffmpeg.on('log', ({ message }) => console.log('[FFmpeg]', message));
+        ffmpeg.on('progress', ({ progress }) => {
+          console.log('[FFmpeg]', (progress * 100).toFixed(1) + '%');
+        });
+        await ffmpeg.load();
+        ffmpegLoaded = true;
+        showToast('تم تحميل محرك المعالجة!', 'success');
+      }
+
+      // ===== Video Processing Helpers =====
+      async function getVideoBlobFromPlayer() {
+        const videoEl = document.querySelector('#root video');
+        if (!videoEl || !videoEl.src) return null;
+        const response = await fetch(videoEl.src);
+        return await response.blob();
+      }
+
+      async function applyVideoToPlayer(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const videoEl = document.querySelector('#root video');
+        if (!videoEl) {
+          showToast('لم يتم العثور على مشغل الفيديو', 'error');
+          return;
+        }
+
+        // Store for later download
+        window._lastProcessedVideo = { blob, url, filename };
+
+        // Apply directly to video element
+        videoEl.src = url;
+        videoEl.load();
+
+        // Add download button if not exists
+        ensureDownloadButton();
+
+        // Try to play
+        try { await videoEl.play(); } catch(e) {}
+
+        showToast('تم تطبيق التعديل على الفيديو بنجاح!', 'success');
+      }
+
+      function ensureDownloadButton() {
+        if (document.getElementById('video-download-btn')) return;
+        const bar = document.getElementById('video-tools-bar');
+        if (!bar) return;
+
+        const btn = document.createElement('button');
+        btn.id = 'video-download-btn';
+        btn.style.cssText = BTN_STYLE + ' background:rgba(34,197,94,0.2); border-color:rgba(34,197,94,0.5);';
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>تحميل النسخة المعدلة`;
+        btn.onmouseover = () => { btn.style.background='rgba(34,197,94,0.4)'; };
+        btn.onmouseout  = () => { btn.style.background='rgba(34,197,94,0.2)'; };
+        btn.onclick = downloadLastProcessed;
+        bar.appendChild(btn);
+      }
+
+      function downloadLastProcessed() {
+        if (!window._lastProcessedVideo) {
+          showToast('لا يوجد فيديو معدل للتحميل', 'error');
+          return;
+        }
+        const { url, filename } = window._lastProcessedVideo;
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast('جاري تحميل الفيديو...', 'success');
+      }
+
+      // ===== Modal Functions =====
       function openModal(id) {
+        if (isProcessing) {
+          showToast('هناك عملية جارية حالياً، يرجى الانتظار', 'info');
+          return;
+        }
         document.getElementById(id).classList.add('active');
-        // عند فتح modals الفيديو: أعطها معلومات الفيديو الحالي
         syncCurrentVideo();
         if (id === 'trim-modal') setupTrimSliders();
       }
-      function closeModal(id) { 
+
+      function closeModal(id) {
         document.getElementById(id).classList.remove('active');
         resetModal(id);
       }
-      
+
       function resetModal(id) {
         const modal = document.getElementById(id);
         const inputs = modal.querySelectorAll('input[type="file"]');
         inputs.forEach(input => input.value = '');
+        const labels = modal.querySelectorAll('.file-input-label strong');
+        labels.forEach((l, i) => { if(i===0) l.textContent = 'الفيديو الإضافي'; });
         const progress = modal.querySelector('.progress-container');
         if (progress) progress.style.display = 'none';
+        const btn = modal.querySelector('[id$="-action-btn"]');
+        if (btn) btn.disabled = false;
       }
 
-      // مزامنة الفيديو الحالي من الـ React player
       function syncCurrentVideo() {
         const videoEl = document.querySelector('#root video');
         if (videoEl && videoEl.src) {
-          _currentVideoSrc = videoEl.src;
-          _currentVideoDuration = videoEl.duration || 0;
-          // اسم الملف
-          const nameEl = document.querySelector('#root .text-sm.text-gray-400.min-w-\\[80px\\]') ||
-                         document.querySelector('#root span[class*="text-sm"]');
-          const name = _currentVideoFile ? _currentVideoFile.name : 'الفيديو الحالي';
+          const name = window._currentVideoFile?.name || 'الفيديو الحالي';
           ['merge-current-name','trim-current-name','speed-current-name'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = name;
@@ -551,95 +630,114 @@
         }
       }
 
-      // Drag & Drop
+      // ===== Drag & Drop =====
       function handleDragOver(e) {
         e.preventDefault();
         e.currentTarget.classList.add('drag-over');
       }
-      
+
       function handleDragLeave(e) {
         e.currentTarget.classList.remove('drag-over');
       }
-      
+
       function handleDrop(e, inputId) {
         e.preventDefault();
         e.currentTarget.classList.remove('drag-over');
         const files = e.dataTransfer.files;
         if (files.length > 0) {
           document.getElementById(inputId).files = files;
-          // تحديث اسم الملف في الـ label
           const label = document.querySelector(`label[for="${inputId}"]`);
           if (label) label.querySelector('strong').textContent = files[0].name;
         }
       }
 
-      // ─── دمج الفيديو ───
+      // ===== MERGE =====
       async function startMerge() {
+        if (isProcessing) return;
         const videoEl = document.querySelector('#root video');
         const v2 = document.getElementById('merge-video2').files[0];
-        
+
         if (!videoEl || !videoEl.src) {
-          alert('لا يوجد فيديو محمّل حالياً');
+          showToast('لا يوجد فيديو محمّل حالياً', 'error');
           return;
         }
         if (!v2) {
-          alert('يرجى اختيار الفيديو الإضافي');
+          showToast('يرجى اختيار الفيديو الإضافي', 'error');
           return;
         }
-        
+
+        isProcessing = true;
         const btn = document.getElementById('merge-action-btn');
         const progress = document.getElementById('merge-progress');
         const fill = document.getElementById('merge-progress-fill');
         const status = document.getElementById('merge-status');
         const order = document.querySelector('input[name="merge-order"]:checked').value;
-        
+
         btn.disabled = true;
         progress.style.display = 'block';
-        
+
         try {
-          status.innerText = 'جاري تجهيز الفيديوهات...';
-          fill.style.width = '30%';
-          await new Promise(r => setTimeout(r, 800));
+          await initFFmpeg();
 
-          status.innerText = 'جاري الدمج...';
-          fill.style.width = '70%';
-          await new Promise(r => setTimeout(r, 1200));
+          status.innerText = 'جاري قراءة الفيديوهات...';
+          fill.style.width = '10%';
 
-          fill.style.width = '100%';
-          status.innerText = 'تم الدمج! جاري تحميل الفيديوهين...';
+          const v1Blob = await getVideoBlobFromPlayer();
+          const v2Blob = v2;
 
-          const download = (src, name) => {
-            const a = document.createElement('a');
-            a.href = src;
-            a.download = name;
-            a.click();
-          };
-
+          let file1, file2;
           if (order === 'current-first') {
-            download(videoEl.src, 'part1_' + Date.now() + '.mp4');
-            setTimeout(() => {
-              const url2 = URL.createObjectURL(v2);
-              download(url2, 'part2_' + Date.now() + '.mp4');
-              setTimeout(() => URL.revokeObjectURL(url2), 2000);
-            }, 600);
+            file1 = v1Blob; file2 = v2Blob;
           } else {
-            const url2 = URL.createObjectURL(v2);
-            download(url2, 'part1_' + Date.now() + '.mp4');
-            setTimeout(() => URL.revokeObjectURL(url2), 2000);
-            setTimeout(() => download(videoEl.src, 'part2_' + Date.now() + '.mp4'), 600);
+            file1 = v2Blob; file2 = v1Blob;
           }
 
+          await ffmpeg.writeFile('input1.mp4', await fetchFile(file1));
+          status.innerText = 'جاري تحميل الفيديو الأول...';
+          fill.style.width = '25%';
+
+          await ffmpeg.writeFile('input2.mp4', await fetchFile(file2));
+          status.innerText = 'جاري تحميل الفيديو الثاني...';
+          fill.style.width = '40%';
+
+          // Create concat list file
+          await ffmpeg.writeFile('concat_list.txt', "file 'input1.mp4'\nfile 'input2.mp4'\n");
+          status.innerText = 'جاري دمج الفيديوهات...';
+          fill.style.width = '60%';
+
+          await ffmpeg.exec([
+            '-f', 'concat', '-safe', '0',
+            '-i', 'concat_list.txt',
+            '-c', 'copy',
+            'output.mp4'
+          ]);
+
+          status.innerText = 'جاري استخراج النتيجة...';
+          fill.style.width = '85%';
+
+          const data = await ffmpeg.readFile('output.mp4');
+          const blob = new Blob([data.buffer], { type: 'video/mp4' });
+
+          fill.style.width = '100%';
+          status.innerText = 'تم الدمج بنجاح!';
+
+          await applyVideoToPlayer(blob, 'merged_' + Date.now() + '.mp4');
+
           setTimeout(() => {
-            btn.disabled = false;
             closeModal('merge-modal');
-          }, 2000);
+          }, 1000);
+
         } catch (err) {
-          alert('خطأ: ' + err.message);
+          console.error(err);
+          showToast('خطأ في الدمج: ' + err.message, 'error');
+          status.innerText = 'فشل الدمج';
+        } finally {
+          isProcessing = false;
           btn.disabled = false;
         }
       }
 
-      // ─── قص الفيديو ───
+      // ===== TRIM =====
       let trimStartVal = 0, trimEndVal = 100;
 
       function setupTrimSliders() {
@@ -647,9 +745,9 @@
         if (!videoEl || !videoEl.duration) return;
         const dur = Math.floor(videoEl.duration);
         const startSlider = document.getElementById('trim-start');
-        const endSlider   = document.getElementById('trim-end');
+        const endSlider = document.getElementById('trim-end');
         startSlider.max = dur;
-        endSlider.max   = dur;
+        endSlider.max = dur;
         endSlider.value = dur;
         trimEndVal = dur;
         document.getElementById('trim-end-val').innerText = dur;
@@ -661,200 +759,270 @@
       function updateTrimStart(val) {
         trimStartVal = parseFloat(val);
         document.getElementById('trim-start-val').innerText = parseFloat(val).toFixed(1);
-        // تأكد أن البداية لا تتجاوز النهاية
         if (trimStartVal >= trimEndVal) {
-          document.getElementById('trim-start').value = trimEndVal - 1;
-          trimStartVal = trimEndVal - 1;
+          trimStartVal = Math.max(0, trimEndVal - 1);
+          document.getElementById('trim-start').value = trimStartVal;
           document.getElementById('trim-start-val').innerText = trimStartVal.toFixed(1);
         }
       }
+
       function updateTrimEnd(val) {
         trimEndVal = parseFloat(val);
         document.getElementById('trim-end-val').innerText = parseFloat(val).toFixed(1);
         if (trimEndVal <= trimStartVal) {
-          document.getElementById('trim-end').value = trimStartVal + 1;
           trimEndVal = trimStartVal + 1;
+          document.getElementById('trim-end').value = trimEndVal;
           document.getElementById('trim-end-val').innerText = trimEndVal.toFixed(1);
         }
       }
-      
+
       async function startTrim() {
+        if (isProcessing) return;
         const videoEl = document.querySelector('#root video');
         if (!videoEl || !videoEl.src) {
-          alert('لا يوجد فيديو محمّل حالياً');
+          showToast('لا يوجد فيديو محمّل حالياً', 'error');
           return;
         }
-        
+
+        isProcessing = true;
         const btn = document.getElementById('trim-action-btn');
         const progress = document.getElementById('trim-progress');
         const fill = document.getElementById('trim-progress-fill');
         const status = document.getElementById('trim-status');
-        
+
         btn.disabled = true;
         progress.style.display = 'block';
-        
-        try {
-          status.innerText = `جاري قص الفيديو من ${trimStartVal}s إلى ${trimEndVal}s...`;
-          fill.style.width = '50%';
-          await new Promise(r => setTimeout(r, 1800));
-          fill.style.width = '100%';
-          status.innerText = 'تم القص! جاري التحميل...';
 
-          const a = document.createElement('a');
-          a.href = videoEl.src;
-          a.download = 'trimmed_' + Date.now() + '.mp4';
-          a.click();
-          
-          setTimeout(() => { btn.disabled = false; closeModal('trim-modal'); }, 1500);
+        try {
+          await initFFmpeg();
+
+          status.innerText = 'جاري قراءة الفيديو...';
+          fill.style.width = '15%';
+
+          const vBlob = await getVideoBlobFromPlayer();
+          await ffmpeg.writeFile('input.mp4', await fetchFile(vBlob));
+
+          const duration = (trimEndVal - trimStartVal).toFixed(2);
+          status.innerText = `جاري قص الفيديو من ${trimStartVal.toFixed(1)}s إلى ${trimEndVal.toFixed(1)}s...`;
+          fill.style.width = '40%';
+
+          await ffmpeg.exec([
+            '-i', 'input.mp4',
+            '-ss', trimStartVal.toString(),
+            '-t', duration,
+            '-c', 'copy',
+            'output.mp4'
+          ]);
+
+          status.innerText = 'جاري استخراج النتيجة...';
+          fill.style.width = '80%';
+
+          const data = await ffmpeg.readFile('output.mp4');
+          const blob = new Blob([data.buffer], { type: 'video/mp4' });
+
+          fill.style.width = '100%';
+          status.innerText = 'تم القص بنجاح!';
+
+          await applyVideoToPlayer(blob, 'trimmed_' + Date.now() + '.mp4');
+
+          setTimeout(() => {
+            closeModal('trim-modal');
+          }, 1000);
+
         } catch (err) {
-          alert('خطأ: ' + err.message);
+          console.error(err);
+          showToast('خطأ في القص: ' + err.message, 'error');
+          status.innerText = 'فشل القص';
+        } finally {
+          isProcessing = false;
           btn.disabled = false;
         }
       }
 
-      // ─── السرعة ───
+      // ===== SPEED =====
       function updateSpeed(val) {
         document.getElementById('speed-val').innerText = parseFloat(val).toFixed(2) + 'x';
       }
+
       function setSpeed(val) {
         document.getElementById('speed-slider').value = val;
         updateSpeed(val);
-        // تطبيق على الـ video في الـ React player مباشرة
-        const videoEl = document.querySelector('#root video');
-        if (videoEl) videoEl.playbackRate = val;
       }
-      
+
       async function startSpeed() {
+        if (isProcessing) return;
         const videoEl = document.querySelector('#root video');
         if (!videoEl || !videoEl.src) {
-          alert('لا يوجد فيديو محمّل حالياً');
+          showToast('لا يوجد فيديو محمّل حالياً', 'error');
           return;
         }
+
         const speed = parseFloat(document.getElementById('speed-slider').value);
-        
+        if (speed === 1) {
+          showToast('السرعة 1x - لا يوجد تغيير', 'info');
+          closeModal('speed-modal');
+          return;
+        }
+
+        isProcessing = true;
         const btn = document.getElementById('speed-action-btn');
         const progress = document.getElementById('speed-progress');
         const fill = document.getElementById('speed-progress-fill');
         const status = document.getElementById('speed-status');
-        
+
         btn.disabled = true;
         progress.style.display = 'block';
-        
-        try {
-          // تطبيق السرعة فوراً على الـ player
-          videoEl.playbackRate = speed;
-          status.innerText = `تم تطبيق السرعة ${speed}x على الفيديو!`;
-          fill.style.width = '60%';
-          await new Promise(r => setTimeout(r, 800));
-          status.innerText = 'جاري تحميل نسخة الفيديو...';
-          fill.style.width = '100%';
-          await new Promise(r => setTimeout(r, 800));
 
-          const a = document.createElement('a');
-          a.href = videoEl.src;
-          a.download = 'speed_' + speed + 'x_' + Date.now() + '.mp4';
-          a.click();
-          
-          setTimeout(() => { btn.disabled = false; closeModal('speed-modal'); }, 1200);
+        try {
+          await initFFmpeg();
+
+          status.innerText = 'جاري قراءة الفيديو...';
+          fill.style.width = '15%';
+
+          const vBlob = await getVideoBlobFromPlayer();
+          await ffmpeg.writeFile('input.mp4', await fetchFile(vBlob));
+
+          status.innerText = `جاري تغيير السرعة إلى ${speed}x...`;
+          fill.style.width = '40%';
+
+          // Build filter: setpts for video, atempo for audio
+          const videoFilter = `setpts=${(1/speed).toFixed(4)}*PTS`;
+
+          // atempo accepts 0.5 to 2.0, chain for values outside
+          let audioFilter;
+          if (speed >= 0.5 && speed <= 2.0) {
+            audioFilter = `atempo=${speed.toFixed(4)}`;
+          } else if (speed < 0.5) {
+            // Chain atempo 0.5,0.5 for 0.25x
+            audioFilter = 'atempo=0.5,atempo=0.5';
+          } else {
+            // Chain for >2x (e.g., 3x = atempo=2,atempo=1.5)
+            const r = speed / 2;
+            audioFilter = `atempo=2.0,atempo=${r.toFixed(4)}`;
+          }
+
+          await ffmpeg.exec([
+            '-i', 'input.mp4',
+            '-filter:v', videoFilter,
+            '-filter:a', audioFilter,
+            '-c:v', 'libx264', '-preset', 'ultrafast',
+            '-c:a', 'aac',
+            'output.mp4'
+          ]);
+
+          status.innerText = 'جاري استخراج النتيجة...';
+          fill.style.width = '80%';
+
+          const data = await ffmpeg.readFile('output.mp4');
+          const blob = new Blob([data.buffer], { type: 'video/mp4' });
+
+          fill.style.width = '100%';
+          status.innerText = 'تم تغيير السرعة بنجاح!';
+
+          await applyVideoToPlayer(blob, 'speed_' + speed + 'x_' + Date.now() + '.mp4');
+
+          setTimeout(() => {
+            closeModal('speed-modal');
+          }, 1000);
+
         } catch (err) {
-          alert('خطأ: ' + err.message);
+          console.error(err);
+          showToast('خطأ في تغيير السرعة: ' + err.message, 'error');
+          status.innerText = 'فشل تغيير السرعة';
+
+          // Fallback: just change playback rate
+          videoEl.playbackRate = speed;
+          showToast('تم تغيير سرعة التشغيل مؤقتاً (بدون معالجة)', 'info');
+          setTimeout(() => closeModal('speed-modal'), 500);
+        } finally {
+          isProcessing = false;
           btn.disabled = false;
         }
       }
 
-      // ─── TTS ───
+      // ===== TTS =====
       function updateTTSRate(val) {
         document.getElementById('tts-rate-val').innerText = parseFloat(val).toFixed(1) + 'x';
       }
-      
+
       function updateTTSPitch(val) {
         document.getElementById('tts-pitch-val').innerText = parseFloat(val).toFixed(1);
       }
-      
+
       async function startTTS() {
+        if (isProcessing) return;
         const text = document.getElementById('tts-text').value.trim();
         if (!text) {
-          alert('يرجى إدخال نص');
+          showToast('يرجى إدخال نص', 'error');
           return;
         }
-        
+
+        isProcessing = true;
         const btn = document.getElementById('tts-action-btn');
         const progress = document.getElementById('tts-progress');
         const fill = document.getElementById('tts-progress-fill');
         const status = document.getElementById('tts-status');
-        
+
         btn.disabled = true;
         progress.style.display = 'block';
-        
+
         try {
           status.innerText = 'جاري تحويل النص إلى كلام...';
           fill.style.width = '30%';
-          
+
           const utterance = new SpeechSynthesisUtterance(text);
-          utterance.rate  = parseFloat(document.getElementById('tts-rate').value);
+          utterance.rate = parseFloat(document.getElementById('tts-rate').value);
           utterance.pitch = parseFloat(document.getElementById('tts-pitch').value);
-          utterance.lang  = 'ar-SA';
-
-          // محاولة تسجيل الصوت وتحميله
-          let audioBlob = null;
-          try {
-            const ctx = new AudioContext();
-            const dest = ctx.createMediaStreamDestination();
-            const rec  = new MediaRecorder(dest.stream);
-            const chunks = [];
-            rec.ondataavailable = e => chunks.push(e.data);
-            rec.onstop = () => {
-              audioBlob = new Blob(chunks, { type: 'audio/webm' });
-            };
-
-            // تشغيل وتسجيل
-            utterance.onstart = () => rec.start();
-            utterance.onend   = () => {
-              rec.stop();
-              ctx.close();
-            };
-          } catch (_) { /* التسجيل غير مدعوم - سيشغّل بدون تحميل */ }
+          utterance.lang = 'ar-SA';
 
           fill.style.width = '60%';
-          await new Promise((resolve) => {
+
+          await new Promise((resolve, reject) => {
             utterance.onend = resolve;
+            utterance.onerror = reject;
             speechSynthesis.speak(utterance);
           });
-          
-          fill.style.width = '100%';
-          status.innerText = 'تم التحويل بنجاح! ✓';
 
-          // تحميل الصوت إن أمكن
-          if (audioBlob) {
-            const url = URL.createObjectURL(audioBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'tts_audio_' + Date.now() + '.webm';
-            a.click();
-            setTimeout(() => URL.revokeObjectURL(url), 2000);
-          }
-          
+          fill.style.width = '100%';
+          status.innerText = 'تم التحويل بنجاح!';
+          showToast('تم تحويل النص إلى كلام!', 'success');
+
           setTimeout(() => {
-            btn.disabled = false;
             closeModal('tts-modal');
-          }, 1500);
+          }, 1200);
+
         } catch (err) {
-          alert('خطأ: ' + err.message);
+          console.error(err);
+          showToast('خطأ: ' + err.message, 'error');
+        } finally {
+          isProcessing = false;
           btn.disabled = false;
         }
       }
-      
+
       // File input click handlers
       document.querySelectorAll('.file-input-wrapper').forEach(wrapper => {
-        wrapper.addEventListener('click', () => {
-          wrapper.querySelector('input[type="file"]').click();
+        wrapper.addEventListener('click', (e) => {
+          if (e.target.tagName !== 'INPUT') {
+            wrapper.querySelector('input[type="file"]').click();
+          }
+        });
+      });
+
+      // File input change handlers
+      document.querySelectorAll('.file-input-wrapper input[type="file"]').forEach(input => {
+        input.addEventListener('change', (e) => {
+          if (e.target.files.length > 0) {
+            const label = e.target.closest('.file-input-wrapper').querySelector('.file-input-label strong');
+            if (label) label.textContent = e.target.files[0].name;
+          }
         });
       });
     </script>
 
     <script>
       // =========================================================
-      // إضافة ميزات الفيديو داخل قسم الفيديو في الـ React App
+      // Video Tools Bar + TTS Home Button Injection
       // =========================================================
 
       const BTN_STYLE = `
@@ -876,7 +1044,6 @@
           border-top:1px solid rgba(239,68,68,0.2);
           border-bottom:1px solid rgba(239,68,68,0.2);
         `;
-        // فقط دمج، قص، سرعة — بدون زر TTS هنا
         const tools = [
           { label:'دمج فيديوهات', modal:'merge-modal', icon:'<path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/>' },
           { label:'قص الفيديو',   modal:'trim-modal',  icon:'<path d="M6 4h12M6 4l2 2m8-2l-2 2M6 20h12m-12 0l2-2m8 2l-2-2"/>' },
@@ -894,43 +1061,60 @@
         return bar;
       }
 
-      // ─── زر الصوت في الشاشة الرئيسية ───
+      // TTS Button - ONLY on home page
       function injectTTSHomeButton() {
+        // Only inject if we're truly on home page (no video, no editor visible)
+        const videoEl = document.querySelector('#root video');
+        if (videoEl) return; // Don't inject if video is present
+
         const buttons = document.querySelectorAll('#root button.group.relative.overflow-hidden.rounded-3xl');
-        if (buttons.length >= 2 && !document.getElementById('home-tts-btn')) {
-          const videoBtn = buttons[1];
-          const container = videoBtn.parentElement;
-          if (!container) return;
+        if (buttons.length < 2) return;
+        if (document.getElementById('home-tts-btn')) return;
 
-          // إضافة id للـ grid للتحكم في موبايل
-          container.id = 'home-cards-grid';
+        const videoBtn = buttons[1];
+        const container = videoBtn.parentElement;
+        if (!container) return;
 
-          const ttsBtn = document.createElement('button');
-          ttsBtn.id = 'home-tts-btn';
-          ttsBtn.className = videoBtn.className;
-          ttsBtn.innerHTML = `
-            <div class="absolute inset-0 gradient-primary opacity-0 group-hover:opacity-20 transition-opacity"></div>
-            <div class="relative z-10 flex flex-col items-center">
-              <div class="w-24 h-24 rounded-full bg-red-500/20 flex items-center justify-center mb-6 group-hover:bg-red-500/30 transition-colors">
-                <svg class="w-12 h-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                  <line x1="12" y1="19" x2="12" y2="23"/>
-                  <line x1="8" y1="23" x2="16" y2="23"/>
-                </svg>
-              </div>
-              <h3 class="text-2xl font-bold text-white mb-2">نص إلى صوت</h3>
-              <p class="text-gray-400 text-center">حوّل أي نص إلى صوت وحمّله</p>
+        // Ensure this is the home grid (not image editor)
+        const hasCanvas = document.querySelector('#root canvas');
+        if (hasCanvas) return; // Don't add in image editor
+
+        container.id = 'home-cards-grid';
+
+        const ttsBtn = document.createElement('button');
+        ttsBtn.id = 'home-tts-btn';
+        ttsBtn.className = videoBtn.className;
+        ttsBtn.innerHTML = `
+          <div class="absolute inset-0 gradient-primary opacity-0 group-hover:opacity-20 transition-opacity"></div>
+          <div class="relative z-10 flex flex-col items-center">
+            <div class="w-24 h-24 rounded-full bg-red-500/20 flex items-center justify-center mb-6 group-hover:bg-red-500/30 transition-colors">
+              <svg class="w-12 h-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                <line x1="12" y1="19" x2="12" y2="23"/>
+                <line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
             </div>
-          `;
-          ttsBtn.onclick = () => openModal('tts-modal');
-          container.appendChild(ttsBtn);
-          // Desktop: 3 أعمدة
-          container.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+            <h3 class="text-2xl font-bold text-white mb-2">نص إلى صوت</h3>
+            <p class="text-gray-400 text-center">حوّل أي نص إلى صوت وحمّله</p>
+          </div>
+        `;
+        ttsBtn.onclick = () => openModal('tts-modal');
+        container.appendChild(ttsBtn);
+        container.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+      }
+
+      function removeTTSHomeButton() {
+        const btn = document.getElementById('home-tts-btn');
+        if (btn) btn.remove();
+        const grid = document.getElementById('home-cards-grid');
+        if (grid) {
+          grid.style.gridTemplateColumns = '';
+          grid.removeAttribute('id');
         }
       }
 
-      // ─── شريط أزرار الفيديو ───
+      // Video Tools Bar
       function injectVideoToolsBar() {
         if (document.getElementById('video-tools-bar')) return;
         const videoEl = document.querySelector('#root video');
@@ -942,29 +1126,46 @@
         const bar = makeVideoToolsBar();
         parent.insertBefore(bar, videoWrapper);
 
-        // احفظ مرجع الفيديو (لتمرير ملفه للـ modals)
+        // Store reference
         _currentVideoSrc = videoEl.src;
         videoEl.addEventListener('loadedmetadata', () => {
           _currentVideoDuration = videoEl.duration;
         });
       }
 
-      // ─── مراقبة DOM ───
+      // Track current file name from React app
+      let _currentVideoFile = null;
+      let _currentVideoSrc = null;
+      let _currentVideoDuration = 0;
+
+      // DOM Observer
       let lastMode = null;
       const observer = new MutationObserver(() => {
         const hasVideo = !!document.querySelector('#root video');
+        const hasCanvas = !!document.querySelector('#root canvas');
         const homeButtons = document.querySelectorAll('#root button.group.relative.overflow-hidden.rounded-3xl');
 
         if (hasVideo && lastMode !== 'video') {
           lastMode = 'video';
-          // أزل الـ bar القديمة إن وجدت (لأن الفيديو تغيّر)
+          // Remove old bar
           const old = document.getElementById('video-tools-bar');
           if (old) old.remove();
+          // Remove TTS button (we're in video mode)
+          removeTTSHomeButton();
           setTimeout(injectVideoToolsBar, 400);
-        } else if (!hasVideo && homeButtons.length >= 2 && lastMode !== 'home') {
+        } else if (!hasVideo && !hasCanvas && homeButtons.length >= 2 && lastMode !== 'home') {
           lastMode = 'home';
+          // Remove video bar
+          const old = document.getElementById('video-tools-bar');
+          if (old) old.remove();
           setTimeout(injectTTSHomeButton, 300);
-        } else if (!hasVideo && homeButtons.length < 2) {
+        } else if (!hasVideo && hasCanvas) {
+          // Image editor mode - remove TTS, remove video bar
+          lastMode = 'image';
+          removeTTSHomeButton();
+          const old = document.getElementById('video-tools-bar');
+          if (old) old.remove();
+        } else if (!hasVideo && homeButtons.length < 2 && !hasCanvas) {
           lastMode = null;
         }
       });
