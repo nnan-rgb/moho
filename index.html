@@ -1172,5 +1172,18 @@
 
       observer.observe(document.getElementById('root'), { childList: true, subtree: true });
     </script>
-  </body>
+  <script>
+    // Logic to fix privacy button visibility
+    window.onload = function() {
+        const privacyBtn = document.querySelector('a[href*="PrivacyPolicy.html"]');
+        if (privacyBtn && window.location.search.length > 0) {
+            privacyBtn.style.display = 'none';
+        }
+    };
+    </script>
+    <div id="overlay-management" style="position:fixed; top:10px; left:10px; background:rgba(0,0,0,0.8); p:10px; border-radius:8px; z-index:10001; color:white; display:none;">
+       <label>حجم الصورة: </label><input type="range" id="ov-size" min="10" max="100" value="30"><br>
+       <label>الشفافية: </label><input type="range" id="ov-opacity" min="0" max="100" value="100">
+    </div>
+    </body>
 </html>
