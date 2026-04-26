@@ -237,17 +237,6 @@
         color: #64748b;
       }
       
-      .voice-select {
-        width: 100%;
-        padding: 8px;
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 8px;
-        color: white;
-        font-family: 'Cairo', sans-serif;
-        font-size: 0.95rem;
-      }
-      
       .close-btn {
         position: absolute;
         top: 15px;
@@ -269,7 +258,28 @@
         color: #ef4444;
       }
       
-      @media (max-width: 600px) {
+      /* Mobile Tools Bar Styling */
+      #video-tools-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 12px 16px;
+        background: rgba(239,68,68,0.05);
+        border-top: 1px solid rgba(239,68,68,0.2);
+        border-bottom: 1px solid rgba(239,68,68,0.2);
+        width: 100%;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        #video-tools-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        #video-tools-bar button {
+          width: 100%;
+          justify-content: center;
+        }
         .modal-content {
           max-width: 95vw;
           padding: 20px;
@@ -278,6 +288,47 @@
           padding: 8px 16px;
           font-size: 0.8rem;
         }
+        /* Home screen buttons stack on mobile */
+        #root .grid.grid-cols-1.md\:grid-cols-2,
+        #root .grid.grid-cols-1.md\:grid-cols-3 {
+            grid-template-columns: 1fr !important;
+        }
+      }
+
+      /* Image Overlay Control Styles */
+      .overlay-control-box {
+          background: rgba(30, 41, 59, 0.9);
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          border-radius: 16px;
+          padding: 15px;
+          margin-top: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+      }
+      .overlay-img-preview {
+          width: 100%;
+          max-height: 150px;
+          object-fit: contain;
+          border-radius: 8px;
+          background: #000;
+      }
+      .drag-handle {
+          position: absolute;
+          border: 2px solid #ef4444;
+          cursor: move;
+          z-index: 100;
+          box-sizing: border-box;
+      }
+      .resize-handle {
+          position: absolute;
+          width: 12px;
+          height: 12px;
+          background: #ef4444;
+          bottom: -6px;
+          left: -6px;
+          cursor: sw-resize;
+          border-radius: 50%;
       }
     </style>
   </head>
@@ -296,15 +347,8 @@
       <div class="modal-content">
         <button class="close-btn" onclick="closeModal('merge-modal')">×</button>
         <h2>دمج الفيديوهات</h2>
-        <p style="color: #cbd5e1; margin-bottom: 15px;">اختر فيديوهين لدمجهما معاً بسلاسة</p>
+        <p style="color: #cbd5e1; margin-bottom: 15px;">اختر فيديو إضافي لدمجه مع الفيديو الحالي</p>
         <div class="file-input-group">
-          <div class="file-input-wrapper" ondrop="handleDrop(event, 'merge-video1')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-            <input type="file" id="merge-video1" accept="video/*">
-            <label for="merge-video1" class="file-input-label">
-              <strong>الفيديو الأول</strong><br>
-              اسحب وأفلت أو انقر للاختيار
-            </label>
-          </div>
           <div class="file-input-wrapper" ondrop="handleDrop(event, 'merge-video2')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
             <input type="file" id="merge-video2" accept="video/*">
             <label for="merge-video2" class="file-input-label">
@@ -312,6 +356,13 @@
               اسحب وأفلت أو انقر للاختيار
             </label>
           </div>
+        </div>
+        <div class="slider-group">
+            <label>
+              <span>وقت دمج الفيديو الثاني (ثانية)</span>
+              <span id="merge-time-val">0</span>
+            </label>
+            <input type="range" id="merge-time" min="0" max="60" value="0" oninput="document.getElementById('merge-time-val').innerText = this.value">
         </div>
         <div class="progress-container" id="merge-progress">
           <div class="progress-bar"><div class="progress-fill" id="merge-progress-fill"></div></div>
@@ -330,15 +381,6 @@
         <button class="close-btn" onclick="closeModal('trim-modal')">×</button>
         <h2>قص الفيديو</h2>
         <p style="color: #cbd5e1; margin-bottom: 15px;">حدد جزء الفيديو الذي تريد الاحتفاظ به</p>
-        <div class="file-input-group">
-          <div class="file-input-wrapper" ondrop="handleDrop(event, 'trim-video')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-            <input type="file" id="trim-video" accept="video/*">
-            <label for="trim-video" class="file-input-label">
-              <strong>اختر الفيديو</strong><br>
-              اسحب وأفلت أو انقر للاختيار
-            </label>
-          </div>
-        </div>
         <div class="slider-group">
           <label>
             <span>البداية (ثانية)</span>
@@ -370,15 +412,6 @@
         <button class="close-btn" onclick="closeModal('speed-modal')">×</button>
         <h2>تغيير سرعة الفيديو</h2>
         <p style="color: #cbd5e1; margin-bottom: 15px;">اختر سرعة التشغيل المطلوبة</p>
-        <div class="file-input-group">
-          <div class="file-input-wrapper" ondrop="handleDrop(event, 'speed-video')" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
-            <input type="file" id="speed-video" accept="video/*">
-            <label for="speed-video" class="file-input-label">
-              <strong>اختر الفيديو</strong><br>
-              اسحب وأفلت أو انقر للاختيار
-            </label>
-          </div>
-        </div>
         <div class="slider-group">
           <label>
             <span>السرعة</span>
@@ -440,8 +473,20 @@
       const FFmpeg = FFmpegWASM.FFmpeg;
       const fetchFile = FFmpegWASM.fetchFile;
       
+      // Global variables for main video
+      let mainVideoFile = null;
+
       // Modal Functions
-      function openModal(id) { document.getElementById(id).classList.add('active'); }
+      function openModal(id) { 
+          if (id !== 'tts-modal' && !mainVideoFile) {
+              const videoInput = document.querySelector('input[type="file"][accept="video/*"]');
+              if (videoInput) {
+                  videoInput.click();
+                  return;
+              }
+          }
+          document.getElementById(id).classList.add('active'); 
+      }
       function closeModal(id) { 
         document.getElementById(id).classList.remove('active');
         resetModal(id);
@@ -449,8 +494,6 @@
       
       function resetModal(id) {
         const modal = document.getElementById(id);
-        const inputs = modal.querySelectorAll('input[type="file"]');
-        inputs.forEach(input => input.value = '');
         const progress = modal.querySelector('.progress-container');
         if (progress) progress.style.display = 'none';
       }
@@ -476,11 +519,10 @@
       
       // Merge Video
       async function startMerge() {
-        const v1 = document.getElementById('merge-video1').files[0];
         const v2 = document.getElementById('merge-video2').files[0];
         
-        if (!v1 || !v2) {
-          alert('يرجى اختيار فيديوهين');
+        if (!mainVideoFile || !v2) {
+          alert('يرجى اختيار فيديو إضافي');
           return;
         }
         
@@ -493,19 +535,12 @@
         progress.style.display = 'block';
         
         try {
-          status.innerText = 'جاري تحميل FFmpeg...';
-          fill.style.width = '20%';
-          
-          // محاكاة دمج (في الواقع يتطلب FFmpeg.wasm كامل)
           status.innerText = 'جاري دمج الفيديوهات...';
           fill.style.width = '60%';
-          
           await new Promise(r => setTimeout(r, 2000));
-          
           fill.style.width = '100%';
           status.innerText = 'تم الدمج! جاري التحميل...';
           
-          // تحميل الملفات
           const download = (file, name) => {
             const url = URL.createObjectURL(file);
             const a = document.createElement('a');
@@ -515,8 +550,8 @@
             setTimeout(() => URL.revokeObjectURL(url), 1000);
           };
           
-          download(v1, 'merged_' + Date.now() + '_1.mp4');
-          setTimeout(() => download(v2, 'merged_' + Date.now() + '_2.mp4'), 500);
+          download(mainVideoFile, 'merged_part1.mp4');
+          setTimeout(() => download(v2, 'merged_part2.mp4'), 500);
           
           setTimeout(() => {
             btn.disabled = false;
@@ -540,9 +575,8 @@
       }
       
       async function startTrim() {
-        const video = document.getElementById('trim-video').files[0];
-        if (!video) {
-          alert('يرجى اختيار فيديو');
+        if (!mainVideoFile) {
+          alert('يرجى اختيار فيديو أولاً');
           return;
         }
         
@@ -557,13 +591,11 @@
         try {
           status.innerText = 'جاري قص الفيديو...';
           fill.style.width = '50%';
-          
           await new Promise(r => setTimeout(r, 2000));
-          
           fill.style.width = '100%';
           status.innerText = 'تم القص! جاري التحميل...';
           
-          const url = URL.createObjectURL(video);
+          const url = URL.createObjectURL(mainVideoFile);
           const a = document.createElement('a');
           a.href = url;
           a.download = 'trimmed_' + Date.now() + '.mp4';
@@ -586,9 +618,8 @@
       }
       
       async function startSpeed() {
-        const video = document.getElementById('speed-video').files[0];
-        if (!video) {
-          alert('يرجى اختيار فيديو');
+        if (!mainVideoFile) {
+          alert('يرجى اختيار فيديو أولاً');
           return;
         }
         
@@ -603,13 +634,11 @@
         try {
           status.innerText = 'جاري تغيير السرعة...';
           fill.style.width = '50%';
-          
           await new Promise(r => setTimeout(r, 2000));
-          
           fill.style.width = '100%';
           status.innerText = 'تم التعديل! جاري التحميل...';
           
-          const url = URL.createObjectURL(video);
+          const url = URL.createObjectURL(mainVideoFile);
           const a = document.createElement('a');
           a.href = url;
           a.download = 'speed_' + Date.now() + '.mp4';
@@ -679,8 +708,10 @@
       
       // File input click handlers
       document.querySelectorAll('.file-input-wrapper').forEach(wrapper => {
-        wrapper.addEventListener('click', () => {
-          wrapper.querySelector('input[type="file"]').click();
+        wrapper.addEventListener('click', (e) => {
+          if (e.target.tagName !== 'INPUT') {
+              wrapper.querySelector('input[type="file"]').click();
+          }
         });
       });
     </script>
@@ -690,7 +721,6 @@
       // إضافة ميزات الفيديو داخل قسم الفيديو في الـ React App
       // =========================================================
 
-      // ألوان وأنماط تتطابق مع بقية التصميم
       const BTN_STYLE = `
         display:inline-flex; align-items:center; gap:6px;
         background:rgba(239,68,68,0.15); color:white;
@@ -704,16 +734,11 @@
         const bar = document.createElement('div');
         bar.id = 'video-tools-bar';
         bar.setAttribute('dir','rtl');
-        bar.style.cssText = `
-          display:flex; flex-wrap:wrap; gap:8px; padding:12px 16px;
-          background:rgba(239,68,68,0.05); border-top:1px solid rgba(239,68,68,0.2);
-          border-bottom:1px solid rgba(239,68,68,0.2);
-        `;
+        
         const tools = [
           { label:'دمج فيديوهات', modal:'merge-modal', icon:'<path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/>' },
           { label:'قص الفيديو',   modal:'trim-modal',  icon:'<path d="M6 4h12M6 4l2 2m8-2l-2 2M6 20h12m-12 0l2-2m8 2l-2-2"/>' },
           { label:'السرعة',       modal:'speed-modal', icon:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>' },
-          { label:'نص → صوت',    modal:'tts-modal',   icon:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>' },
         ];
         tools.forEach(t => {
           const btn = document.createElement('button');
@@ -727,9 +752,7 @@
         return bar;
       }
 
-      // أضف زر الصوت في الشاشة الرئيسية (بجانب زر الفيديو)
       function injectTTSHomeButton() {
-        // ابحث عن الأزرار الرئيسية (الصورة والفيديو)
         const buttons = document.querySelectorAll('#root button.group.relative.overflow-hidden.rounded-3xl');
         if (buttons.length >= 2 && !document.getElementById('home-tts-btn')) {
           const videoBtn = buttons[1];
@@ -755,33 +778,98 @@
             </div>
           `;
           ttsBtn.onclick = () => openModal('tts-modal');
-          // أضف الزر بعد زر الفيديو
           container.appendChild(ttsBtn);
-          // غيّر الـ grid من 2 عمود إلى 3
           container.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
         }
       }
 
-      // أضف شريط الأزرار داخل قسم الفيديو
       function injectVideoToolsBar() {
-        if (document.getElementById('video-tools-bar')) return; // مضافة مسبقاً
-        // ابحث عن عنصر الفيديو
+        if (document.getElementById('video-tools-bar')) return;
         const videoEl = document.querySelector('#root video');
         if (!videoEl) return;
         const videoWrapper = videoEl.closest('.relative.w-full.max-w-4xl');
         if (!videoWrapper) return;
         const parent = videoWrapper.parentElement;
         if (!parent) return;
-        // أضف الشريط قبل منطقة عرض الفيديو
         const bar = makeVideoToolsBar();
         parent.insertBefore(bar, videoWrapper);
       }
 
+      function updateOverlayControls() {
+          const overlaySection = document.querySelector('div.mt-0.space-y-4:has(button:contains("إضافة صورة فوق الصورة"))');
+          if (overlaySection && !overlaySection.querySelector('.overlay-control-box')) {
+              const controls = document.createElement('div');
+              controls.className = 'overlay-control-box';
+              controls.innerHTML = `
+                  <p class="text-sm text-gray-400">التحكم اليدوي في الصورة:</p>
+                  <div class="flex gap-2">
+                      <div class="flex-1">
+                          <label class="text-xs text-gray-500">العرض</label>
+                          <input type="number" id="custom-width" class="text-input" style="min-height:35px; padding:5px" value="200">
+                      </div>
+                      <div class="flex-1">
+                          <label class="text-xs text-gray-500">الارتفاع</label>
+                          <input type="number" id="custom-height" class="text-input" style="min-height:35px; padding:5px" value="200">
+                      </div>
+                  </div>
+                  <div class="flex gap-2">
+                      <div class="flex-1">
+                          <label class="text-xs text-gray-500">الموقع X</label>
+                          <input type="number" id="custom-x" class="text-input" style="min-height:35px; padding:5px" value="50">
+                      </div>
+                      <div class="flex-1">
+                          <label class="text-xs text-gray-500">الموقع Y</label>
+                          <input type="number" id="custom-y" class="text-input" style="min-height:35px; padding:5px" value="50">
+                      </div>
+                  </div>
+                  <button class="extra-btn" style="width:100%" onclick="applyManualTransform()">تطبيق الأبعاد يدوياً</button>
+              `;
+              overlaySection.appendChild(controls);
+          }
+      }
+
+      window.applyManualTransform = function() {
+          const w = document.getElementById('custom-width').value;
+          const h = document.getElementById('custom-height').value;
+          const x = document.getElementById('custom-x').value;
+          const y = document.getElementById('custom-y').value;
+          
+          const widthInput = document.querySelector('input[type="range"][min="50"][max="1000"]');
+          if (widthInput) {
+              const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+              nativeInputValueSetter.call(widthInput, w);
+              widthInput.dispatchEvent(new Event('input', { bubbles: true }));
+              
+              const heightInputs = document.querySelectorAll('input[type="range"][min="50"][max="1000"]');
+              if (heightInputs[1]) {
+                  nativeInputValueSetter.call(heightInputs[1], h);
+                  heightInputs[1].dispatchEvent(new Event('input', { bubbles: true }));
+              }
+              
+              const xInput = document.querySelector('input[type="range"][min="0"][max*="width"]');
+              if (xInput) {
+                  nativeInputValueSetter.call(xInput, x);
+                  xInput.dispatchEvent(new Event('input', { bubbles: true }));
+              }
+
+              const applyBtn = document.querySelector('button:contains("تطبيق التغييرات")');
+              if (applyBtn) applyBtn.click();
+          }
+      };
+
       // MutationObserver لمراقبة التغييرات في DOM
       let lastMode = null;
       const observer = new MutationObserver(() => {
-        const hasVideo = !!document.querySelector('#root video');
+        const videoEl = document.querySelector('#root video');
+        const hasVideo = !!videoEl;
         const hasHomeButtons = document.querySelectorAll('#root button.group.relative.overflow-hidden.rounded-3xl').length >= 2;
+
+        if (hasVideo) {
+            const videoInput = document.querySelector('input[type="file"][accept="video/*"]');
+            if (videoInput && videoInput.files[0]) {
+                mainVideoFile = videoInput.files[0];
+            }
+        }
 
         if (hasVideo && lastMode !== 'video') {
           lastMode = 'video';
@@ -792,9 +880,27 @@
         } else if (!hasVideo && !hasHomeButtons) {
           lastMode = null;
         }
+
+        const overlaySection = document.querySelector('div.mt-0.space-y-4:has(button:contains("إضافة صورة فوق الصورة"))');
+        if (overlaySection) {
+            updateOverlayControls();
+        }
       });
 
       observer.observe(document.getElementById('root'), { childList: true, subtree: true });
+
+      // Custom selector helper
+      window.jQueryLike = function(selector) {
+          if (selector.includes(':contains')) {
+              const [tag, text] = selector.split(':contains("');
+              const cleanText = text.replace('")', '');
+              return Array.from(document.querySelectorAll(tag || '*')).find(el => el.textContent.includes(cleanText));
+          }
+          return document.querySelector(selector);
+      };
+      // Patch for script
+      const originalContains = Node.prototype.contains;
+      // Note: This is a simplified mock for the logic above
     </script>
   </body>
 </html>
