@@ -325,7 +325,24 @@
         }
       }
     </style>
-  </head>
+  
+<style>
+  /* Strong override to hide privacy link when NOT on home-page */
+  html:not(.home-page-active) .privacy-link, 
+  body:not(.home-page) .privacy-link { 
+    display: none !important; 
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+  body.home-page .privacy-link { 
+    display: flex !important; 
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+</style>
+</head>
   <body class="home-page">
     <div id="root"></div>
 
